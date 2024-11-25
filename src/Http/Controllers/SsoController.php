@@ -1,6 +1,6 @@
 <?php
 
-namespace WemX\Sso\Http\Controllers;
+namespace Delonix\Sso\Http\Controllers;
 
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Auth;
@@ -39,11 +39,11 @@ class SsoController
      */
     public function webhook(Request $request)
     {
-        if(!config('sso-wemx.secret')) {
+        if(!config('sso-delonix.secret')) {
             return response(['success' => false, 'message' => 'Please configure a SSO Secret'], 403);
         }
 
-        if($request->input('sso_secret') !== config('sso-wemx.secret')) {
+        if($request->input('sso_secret') !== config('sso-delonix.secret')) {
             return response(['success' => false, 'message' => 'Please provide valid credentials'], 403);
         }
 
@@ -56,7 +56,7 @@ class SsoController
             return response(['success' => false, 'message' => 'Logging into accounts with 2 Factor Authentication enabled is not supported.'], 501);
         }
 
-        return response(['success' => true, 'redirect' => route('sso-wemx.login', $this->generateToken($request->input('user_id')))], 200);
+        return response(['success' => true, 'redirect' => route('sso-delonix.login', $this->generateToken($request->input('user_id')))], 200);
     }
 
     /**
@@ -67,8 +67,8 @@ class SsoController
      */
     protected function generateToken($user_id)
     {
-        $token = Str::random(config('sso-wemx.token.length', 48));
-        Cache::add($token, $user_id, config('sso-wemx.token.lifetime', 60));
+        $token = Str::random(config('sso-delonix.token.length', 48));
+        Cache::add($token, $user_id, config('sso-delonix.token.lifetime', 60));
         return $token;
     }
 
